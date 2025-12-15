@@ -40,8 +40,8 @@ jobs:
         
     - name: Package extension
       run: |
-        mkdir -p resources/app-links-extension
-        cp extension/dist/extensions.js resources/app-links-extension/extensions.js
+        mkdir -p resources/glueops-links-extension
+        cp extension/dist/extensions.js resources/glueops-links-extension/extensions.js
         tar -czf extension.tar.gz resources/
         rm -rf resources/
         

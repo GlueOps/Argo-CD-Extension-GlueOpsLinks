@@ -24,8 +24,8 @@ cd ..
 
 # Package extension
 echo "📦 Packaging extension..."
-mkdir -p resources/app-links-extension
-cp extension/dist/extension.js resources/app-links-extension/extension.js
+mkdir -p resources/glueops-links-extension
+cp extension/dist/extension.js resources/glueops-links-extension/extension.js
 tar -czf extension.tar.gz resources/
 rm -rf resources/
 
@@ -44,17 +44,17 @@ kubectl patch configmap argocd-cmd-params-cm -n argocd --type merge \
 # Configure proxy extension backend (hardcoded Postman Echo URL)
 echo "⚙️  Configuring proxy extension backend..."
 kubectl patch configmap argocd-cm -n argocd --type merge \
-  -p '{"data":{"extension.config":"extensions:\n- name: app-links-extension\n  backend:\n    services:\n    - url: https://postman-echo.com"}}'
+  -p '{"data":{"extension.config":"extensions:\n- name: glueops-links-extension\n  backend:\n    services:\n    - url: https://postman-echo.com"}}'
 
 # Configure RBAC
 echo "⚙️  Configuring RBAC..."
 kubectl patch configmap argocd-rbac-cm -n argocd --type merge \
-  -p '{"data":{"policy.csv":"p, role:org-admin, extensions, invoke, app-links-extension, allow\np, role:admin, extensions, invoke, app-links-extension, allow\np, role:readonly, extensions, invoke, app-links-extension, allow\ng, admin, role:admin\ng, argocd, role:org-admin"}}'
+  -p '{"data":{"policy.csv":"p, role:org-admin, extensions, invoke, glueops-links-extension, allow\np, role:admin, extensions, invoke, glueops-links-extension, allow\np, role:readonly, extensions, invoke, glueops-links-extension, allow\ng, admin, role:admin\ng, argocd, role:org-admin"}}'
 
 # Add extension installer
 echo "⚙️  Adding extension installer to ArgoCD server..."
 kubectl patch deployment argocd-server -n argocd --type json -p '[
-  {"op":"add","path":"/spec/template/spec/initContainers","value":[{"name":"argocd-extension-installer","image":"quay.io/argoprojlabs/argocd-extension-installer:v0.0.5@sha256:27e72f047298188e2de1a73a1901013c274c4760c92f82e6e46cd5fbd0957c6b","env":[{"name":"EXTENSION_NAME","value":"app-links-extension"},{"name":"EXTENSION_URL","value":"file:///extension/extension.tar.gz"},{"name":"EXTENSION_VERSION","value":"1.0.0"},{"name":"EXTENSION_ENABLED","value":"true"}],"volumeMounts":[{"name":"extensions","mountPath":"/tmp/extensions/"},{"name":"extension-tar","mountPath":"/extension","readOnly":true}],"securityContext":{"runAsUser":1000,"allowPrivilegeEscalation":false}}]},
+  {"op":"add","path":"/spec/template/spec/initContainers","value":[{"name":"argocd-extension-installer","image":"quay.io/argoprojlabs/argocd-extension-installer:v0.0.5@sha256:27e72f047298188e2de1a73a1901013c274c4760c92f82e6e46cd5fbd0957c6b","env":[{"name":"EXTENSION_NAME","value":"glueops-links-extension"},{"name":"EXTENSION_URL","value":"file:///extension/extension.tar.gz"},{"name":"EXTENSION_VERSION","value":"1.0.0"},{"name":"EXTENSION_ENABLED","value":"true"}],"volumeMounts":[{"name":"extensions","mountPath":"/tmp/extensions/"},{"name":"extension-tar","mountPath":"/extension","readOnly":true}],"securityContext":{"runAsUser":1000,"allowPrivilegeEscalation":false}}]},
   {"op":"add","path":"/spec/template/spec/volumes/-","value":{"name":"extensions","emptyDir":{}}},
   {"op":"add","path":"/spec/template/spec/volumes/-","value":{"name":"extension-tar","configMap":{"name":"extension-tar"}}},
   {"op":"add","path":"/spec/template/spec/containers/0/volumeMounts/-","value":{"name":"extensions","mountPath":"/tmp/extensions/"}}
@@ -72,7 +72,7 @@ echo "✅ Deployment complete!"
 echo ""
 echo "Verification:"
 kubectl exec -n argocd $(kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o jsonpath='{.items[0].metadata.name}') \
-  -- ls -lh /tmp/extensions/resources/app-links-extension/extension.js 2>/dev/null && echo "✅ Extension installed" || echo "❌ Extension not found"
+  -- ls -lh /tmp/extensions/resources/glueops-links-extension/extension.js 2>/dev/null && echo "✅ Extension installed" || echo "❌ Extension not found"
 
 echo "✅ Using Postman Echo as backend (https://postman-echo.com)"
 

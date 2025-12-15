@@ -69,7 +69,7 @@ Check that the extension is installed:
 
 ```bash
 kubectl exec -n argocd $(kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o jsonpath='{.items[0].metadata.name}') \
-  -- ls -lh /tmp/extensions/resources/app-links-extension/extension.js
+  -- ls -lh /tmp/extensions/resources/glueops-links-extension/extension.js
 ```
 
 ## Updating the Extension
@@ -123,7 +123,7 @@ All configuration is done via `helm-values.yaml`:
 
 3. Check if extension file exists in pod:
    ```bash
-   kubectl exec -n argocd <argocd-server-pod> -- ls -lh /tmp/extensions/resources/app-links-extension/
+   kubectl exec -n argocd <argocd-server-pod> -- ls -lh /tmp/extensions/resources/glueops-links-extension/
    ```
 
 ### Proxy extension not working
@@ -141,7 +141,7 @@ All configuration is done via `helm-values.yaml`:
 3. If `extension.config` is missing from `argocd-cm` (even though it's in `helm-values.yaml`), manually patch it:
    ```bash
    kubectl patch configmap argocd-cm -n argocd --type merge \
-     -p '{"data":{"extension.config":"extensions:\n- name: app-links-extension\n  backend:\n    services:\n    - url: https://postman-echo.com\n"}}'
+     -p '{"data":{"extension.config":"extensions:\n- name: glueops-links-extension\n  backend:\n    services:\n    - url: https://postman-echo.com\n"}}'
    
    kubectl rollout restart deployment argocd-server -n argocd
    ```

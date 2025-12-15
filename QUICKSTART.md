@@ -41,8 +41,8 @@ Open `https://localhost:8080` and log in with username `admin` and the password 
 
 ## What Gets Deployed
 
-- **Extension**: Installed into ArgoCD server at `/tmp/extensions/resources/app-links-extension/extension.js`
-- **Proxy Endpoint**: Hardcoded in extension as `/extensions/app-links-extension/get?appName=...`
+- **Extension**: Installed into ArgoCD server at `/tmp/extensions/resources/glueops-links-extension/extension.js`
+- **Proxy Endpoint**: Hardcoded in extension as `/extensions/glueops-links-extension/get?appName=...`
 - **Backend URL**: Hardcoded in deployment script as `https://postman-echo.com` (configured in ArgoCD ConfigMap)
 - **Proxy Extension**: ArgoCD proxies requests from extension to Postman Echo
 

@@ -59,7 +59,7 @@
           
           try {
             // Call ArgoCD proxy extension with new API path pattern
-            const response = await fetch(`/extensions/app-links-extension/api/v1/mock/applications/${appName}/links`, {
+            const response = await fetch(`/extensions/glueops-links-extension/api/v1/mock/applications/${appName}/links`, {
               method: 'GET',
               credentials: 'include',
               headers: headers,

@@ -52,11 +52,11 @@ kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=argocd-server -
 echo ""
 echo "✅ Verifying extension installation..."
 if kubectl exec -n argocd $(kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o jsonpath='{.items[0].metadata.name}') \
-  -- ls -lh /tmp/extensions/resources/app-links-extension/extensions.js 2>/dev/null; then
+  -- ls -lh /tmp/extensions/resources/glueops-links-extension/extensions.js 2>/dev/null; then
     echo "✅ Extension installed successfully!"
 else
     echo "❌ Extension not found. Check logs:"
-    echo "   kubectl logs -n argocd <argocd-server-pod> -c app-links-extension"
+    echo "   kubectl logs -n argocd <argocd-server-pod> -c glueops-links-extension"
     exit 1
 fi
 

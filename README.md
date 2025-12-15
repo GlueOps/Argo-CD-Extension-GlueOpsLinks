@@ -12,7 +12,7 @@ A UI extension for ArgoCD that displays dynamic quick links for applications, us
 ## Architecture
 
 - **Extension**: React component that registers with ArgoCD's `extensionsAPI`
-- **Proxy Endpoint**: Hardcoded in extension code as `/extensions/app-links-extension/get?appName=...`
+- **Proxy Endpoint**: Hardcoded in extension code as `/extensions/glueops-links-extension/get?appName=...`
 - **Backend URL**: Hardcoded in deployment script as `https://postman-echo.com`
 - **Proxy Extension**: ArgoCD proxies extension requests to Postman Echo, avoiding CORS issues
 
@@ -103,8 +103,8 @@ cd ..
 ### 3. Package the Extension
 
 ```bash
-mkdir -p resources/app-links-extension
-cp extension/dist/extension.js resources/app-links-extension/extension.js
+mkdir -p resources/glueops-links-extension
+cp extension/dist/extension.js resources/glueops-links-extension/extension.js
 tar -czf extension.tar.gz resources/
 ```
 
@@ -122,15 +122,15 @@ kubectl patch configmap argocd-cmd-params-cm -n argocd --type merge \
 
 # Configure proxy extension backend (hardcoded Postman Echo URL)
 kubectl patch configmap argocd-cm -n argocd --type merge \
-  -p '{"data":{"extension.config":"extensions:\n- name: app-links-extension\n  backend:\n    services:\n    - url: https://postman-echo.com"}}'
+  -p '{"data":{"extension.config":"extensions:\n- name: glueops-links-extension\n  backend:\n    services:\n    - url: https://postman-echo.com"}}'
 
 # Configure RBAC for extensions
 kubectl patch configmap argocd-rbac-cm -n argocd --type merge \
-  -p '{"data":{"policy.csv":"p, role:org-admin, extensions, invoke, app-links-extension, allow\np, role:admin, extensions, invoke, app-links-extension, allow\np, role:readonly, extensions, invoke, app-links-extension, allow\ng, admin, role:admin\ng, argocd, role:org-admin"}}'
+  -p '{"data":{"policy.csv":"p, role:org-admin, extensions, invoke, glueops-links-extension, allow\np, role:admin, extensions, invoke, glueops-links-extension, allow\np, role:readonly, extensions, invoke, glueops-links-extension, allow\ng, admin, role:admin\ng, argocd, role:org-admin"}}'
 
 # Add extension installer to ArgoCD server
 kubectl patch deployment argocd-server -n argocd --type json -p '[
-  {"op":"add","path":"/spec/template/spec/initContainers","value":[{"name":"argocd-extension-installer","image":"quay.io/argoprojlabs/argocd-extension-installer:v0.0.5@sha256:27e72f047298188e2de1a73a1901013c274c4760c92f82e6e46cd5fbd0957c6b","env":[{"name":"EXTENSION_NAME","value":"app-links-extension"},{"name":"EXTENSION_URL","value":"file:///extension/extension.tar.gz"},{"name":"EXTENSION_VERSION","value":"1.0.0"},{"name":"EXTENSION_ENABLED","value":"true"}],"volumeMounts":[{"name":"extensions","mountPath":"/tmp/extensions/"},{"name":"extension-tar","mountPath":"/extension","readOnly":true}],"securityContext":{"runAsUser":1000,"allowPrivilegeEscalation":false}}]},
+  {"op":"add","path":"/spec/template/spec/initContainers","value":[{"name":"argocd-extension-installer","image":"quay.io/argoprojlabs/argocd-extension-installer:v0.0.5@sha256:27e72f047298188e2de1a73a1901013c274c4760c92f82e6e46cd5fbd0957c6b","env":[{"name":"EXTENSION_NAME","value":"glueops-links-extension"},{"name":"EXTENSION_URL","value":"file:///extension/extension.tar.gz"},{"name":"EXTENSION_VERSION","value":"1.0.0"},{"name":"EXTENSION_ENABLED","value":"true"}],"volumeMounts":[{"name":"extensions","mountPath":"/tmp/extensions/"},{"name":"extension-tar","mountPath":"/extension","readOnly":true}],"securityContext":{"runAsUser":1000,"allowPrivilegeEscalation":false}}]},
   {"op":"add","path":"/spec/template/spec/volumes/-","value":{"name":"extensions","emptyDir":{}}},
   {"op":"add","path":"/spec/template/spec/volumes/-","value":{"name":"extension-tar","configMap":{"name":"extension-tar"}}},
   {"op":"add","path":"/spec/template/spec/containers/0/volumeMounts/-","value":{"name":"extensions","mountPath":"/tmp/extensions/"}}
@@ -146,7 +146,7 @@ kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=argocd-server -
 ```bash
 # Check extension is installed
 kubectl exec -n argocd $(kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o jsonpath='{.items[0].metadata.name}') \
-  -- ls -lh /tmp/extensions/resources/app-links-extension/extension.js
+  -- ls -lh /tmp/extensions/resources/glueops-links-extension/extension.js
 ```
 
 ## Access ArgoCD
@@ -182,12 +182,12 @@ To use your own backend, update the `extension.config` in `argocd-cm` to point t
 ## Troubleshooting
 
 ### Extension not appearing
-- Check extension is installed: `kubectl exec -n argocd <pod> -- ls /tmp/extensions/resources/app-links-extension/`
+- Check extension is installed: `kubectl exec -n argocd <pod> -- ls /tmp/extensions/resources/glueops-links-extension/`
 - Check browser console for errors
 - Verify `extensions.js` is being served: `curl -k https://localhost:8080/extensions.js`
 
 ### 401 Unauthorized errors
-- Verify RBAC policy includes: `p, role:admin, extensions, invoke, app-links-extension, allow`
+- Verify RBAC policy includes: `p, role:admin, extensions, invoke, glueops-links-extension, allow`
 - Check token is valid and not expired
 - Ensure `Argocd-Application-Name` header format is `namespace:app-name`
 
