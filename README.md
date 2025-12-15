@@ -94,11 +94,14 @@ kubectl wait --for=condition=ready pod -l app.kubernetes.io/name=argocd-server -
 ### 2. Build the Extension
 
 ```bash
-cd extension
-npm install
-npm run build
-cd ..
+./build.sh
 ```
+
+This script:
+- Installs dependencies if needed
+- Builds the extension with webpack
+- Creates proper directory structure (resources/glueops-links-extension/)
+- Packages as extension.tar.gz
 
 ### 3. Package the Extension
 

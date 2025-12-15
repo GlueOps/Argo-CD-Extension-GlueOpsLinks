@@ -8,7 +8,8 @@ module.exports = {
     filename: 'extensions.js',
     path: path.resolve(__dirname, 'dist'),
     library: 'argocdAppLinksExtension',
-    libraryTarget: 'window'
+    libraryTarget: 'window',
+    clean: true
   },
   externals: {
     react: 'React'

@@ -2,7 +2,8 @@
   "name": "glueops-links-extension",
   "version": "0.0.4",
   "scripts": {
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "package": "rm -rf ../resources && mkdir -p ../resources/glueops-links-extension && cp dist/extensions.js ../resources/glueops-links-extension/ && cd .. && tar -czf extension.tar.gz resources/ && rm -rf resources"
   },
   "devDependencies": {
     "webpack": "^5.88.0",

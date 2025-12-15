@@ -25,7 +25,7 @@ cd ..
 # Package extension
 echo "📦 Packaging extension..."
 mkdir -p resources/glueops-links-extension
-cp extension/dist/extension.js resources/glueops-links-extension/extension.js
+cp extension/dist/extensions.js resources/glueops-links-extension/extensions.js
 tar -czf extension.tar.gz resources/
 rm -rf resources/
 
