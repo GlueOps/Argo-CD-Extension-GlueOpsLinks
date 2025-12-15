@@ -53,6 +53,12 @@
           headers.set('Argocd-Application-Name', headerValue);
           headers.set('Argocd-Project-Name', projectName);
           
+          // Get ArgoCD auth token from localStorage and add to headers
+          const authToken = window.localStorage.getItem('argocd.token');
+          if (authToken) {
+            headers.set('Authorization', `Bearer ${authToken}`);
+          }
+          
           // Create abort controller for timeout
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 5000);
