@@ -55,9 +55,23 @@
           
           // Get ArgoCD auth token from localStorage and add to headers
           const authToken = window.localStorage.getItem('argocd.token');
+          console.log('[GlueOps Extension] Auth token found:', authToken ? 'YES (length: ' + authToken.length + ')' : 'NO');
           if (authToken) {
             headers.set('Authorization', `Bearer ${authToken}`);
           }
+          
+          // Debug: log all cookies
+          console.log('[GlueOps Extension] Document cookies:', document.cookie ? 'Present' : 'None');
+          console.log('[GlueOps Extension] Has _oauth2_proxy cookie:', document.cookie.includes('_oauth2_proxy'));
+          
+          const url = `/extensions/glueops-links-extension/api/v1/applications/${appName}/links`;
+          console.log('[GlueOps Extension] Fetching:', url);
+          console.log('[GlueOps Extension] Headers:', {
+            'Accept': headers.get('Accept'),
+            'Argocd-Application-Name': headers.get('Argocd-Application-Name'),
+            'Argocd-Project-Name': headers.get('Argocd-Project-Name'),
+            'Authorization': authToken ? 'Bearer <token>' : 'None'
+          });
           
           // Create abort controller for timeout
           const controller = new AbortController();
@@ -65,7 +79,7 @@
           
           try {
             // Call ArgoCD proxy extension API
-            const response = await fetch(`/extensions/glueops-links-extension/api/v1/applications/${appName}/links`, {
+            const response = await fetch(url, {
               method: 'GET',
               credentials: 'include',
               headers: headers,
@@ -73,13 +87,23 @@
             });
             clearTimeout(timeoutId);
             
+            console.log('[GlueOps Extension] Response status:', response.status);
+            console.log('[GlueOps Extension] Response headers:', {
+              'content-type': response.headers.get('content-type'),
+              'content-length': response.headers.get('content-length')
+            });
+            
             if (!response.ok) {
               // Server returned error status
+              console.error('[GlueOps Extension] Error response:', response.status, response.statusText);
+              const text = await response.text();
+              console.error('[GlueOps Extension] Error body:', text.substring(0, 200));
               setError('offline');
               setCategories([]);
               return;
             }
             const data = await response.json();
+            console.log('[GlueOps Extension] Success! Categories:', data.categories?.length || 0);
             
             // Extract categories array and metadata from API response
             setCategories(data.categories || []);
@@ -87,10 +111,12 @@
             setMaxRows(data.metadata.max_rows);
           } catch (fetchErr) {
             clearTimeout(timeoutId);
+            console.error('[GlueOps Extension] Fetch error:', fetchErr.message);
             throw fetchErr;
           }
         } catch (err) {
           // Network error, timeout, or other fetch failure
+          console.error('[GlueOps Extension] Top-level error:', err.message, err.name);
           // Silently handle - don't crash ArgoCD
           setError('offline');
           setCategories([]);
