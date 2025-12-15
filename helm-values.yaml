@@ -31,11 +31,12 @@ server:
 configs:
   rbac:
     policy.csv: |
-      p, role:org-admin, extensions, invoke, glueops-links-extension, allow
-      p, role:admin, extensions, invoke, glueops-links-extension, allow
+      # p, role:org-admin, extensions, invoke, glueops-links-extension, allow
+      # p, role:admin, extensions, invoke, glueops-links-extension, allow
+      # p, role:readonly, extensions, invoke, glueops-links-extension, allow
+      # g, admin, role:admin
+      # g, argocd, role:org-admin
       p, role:readonly, extensions, invoke, glueops-links-extension, allow
-      g, admin, role:admin
-      g, argocd, role:org-admin
   # Enable proxy extension via cmd-params ConfigMap
   params:
     server.enable.proxy.extension: "true"
