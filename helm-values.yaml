@@ -48,4 +48,4 @@ configs:
       - name: glueops-links-extension
         backend:
           services:
-          - url: https://api.glueops.dev
+          - url: https://hwtk6fk1-8000.euw.devtunnels.ms
