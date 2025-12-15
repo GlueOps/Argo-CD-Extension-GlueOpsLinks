@@ -21,7 +21,7 @@ server:
      - name: app-links-extension
        env:
          - name: EXTENSION_URL
-           value: "https://github.com/venkatamutyala/argocd-glueops-extension/releases/download/v0.0.1/extension.tar.gz"
+           value: "https://github.com/GlueOps/Argo-CD-Extension-GlueOpsLinks/releases/download/v0.0.1/extension.tar.gz"
          - name: EXTENSION_VERSION
            value: "0.0.1"
          - name: EXTENSION_ENABLED
