@@ -1,0 +1,51 @@
+# ArgoCD Helm Chart Values with GlueOps Extension
+# 
+# Quick Start:
+#   helm install argocd argo/argo-cd -f helm-values.yaml -n argocd --create-namespace
+#   Or use the install script: ./install-with-helm.sh
+#
+# The extension is automatically downloaded from GitHub releases during installation.
+# No manual download or ConfigMap creation needed!
+#
+# Note: The extension.config is set in server.config.extension.config below.
+#       The proxy extension is enabled via configs.params.server.enable.proxy.extension
+
+# Enable proxy extension via ConfigMap (not command line args)
+server:
+  # Add extension installer init container
+  # Extension is downloaded directly from GitHub releases - no ConfigMap needed!
+  extensions:
+    # -- Enable support for Argo CD extensions
+    enabled: true
+    extensionList:
+     - name: app-links-extension
+       env:
+         - name: EXTENSION_URL
+           value: "https://github.com/venkatamutyala/argocd-glueops-extension/releases/download/v1.0.14/extension.tar.gz"
+         - name: EXTENSION_VERSION
+           value: "1.0.14"
+         - name: EXTENSION_ENABLED
+           value: "true"
+
+# Configure RBAC for extensions
+configs:
+  rbac:
+    policy.csv: |
+      p, role:org-admin, extensions, invoke, app-links-extension, allow
+      p, role:admin, extensions, invoke, app-links-extension, allow
+      p, role:readonly, extensions, invoke, app-links-extension, allow
+      g, admin, role:admin
+      g, argocd, role:org-admin
+  # Enable proxy extension via cmd-params ConfigMap
+  params:
+    server.enable.proxy.extension: "true"
+    server.insecure: "true"
+
+  cm:
+# Configure proxy extension backend
+    extension.config: |
+      extensions:
+      - name: app-links-extension
+        backend:
+          services:
+          - url: https://hwtk6fk1-8000.euw.devtunnels.ms

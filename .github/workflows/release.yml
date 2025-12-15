@@ -1,0 +1,90 @@
+name: Build and Release Extension
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., v1.0.1)'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: extension/package-lock.json
+        
+    - name: Install dependencies
+      run: |
+        cd extension
+        npm ci
+        
+    - name: Build extension
+      run: |
+        cd extension
+        npm run build
+        
+    - name: Package extension
+      run: |
+        mkdir -p resources/app-links-extension
+        cp extension/dist/extensions.js resources/app-links-extension/extensions.js
+        tar -czf extension.tar.gz resources/
+        rm -rf resources/
+        
+    - name: Get version from release or input
+      id: get_version
+      run: |
+        if [ "${{ github.event_name }}" == "release" ]; then
+          VERSION="${{ github.event.release.tag_name }}"
+        else
+          VERSION="${{ github.event.inputs.version }}"
+        fi
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        echo "Version: ${VERSION}"
+        
+    - name: Upload Release Asset
+      if: github.event_name == 'release'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: extension.tar.gz
+        tag_name: ${{ github.event.release.tag_name }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Create Release (Manual)
+      if: github.event_name == 'workflow_dispatch'
+      uses: softprops/action-gh-release@v1
+      with:
+        files: extension.tar.gz
+        tag_name: ${{ github.event.inputs.version }}
+        name: ${{ github.event.inputs.version }}
+        body: |
+          ArgoCD GlueOps Extension Release
+          
+          **Download**: [extension.tar.gz](https://github.com/${{ github.repository }}/releases/download/${{ github.event.inputs.version }}/extension.tar.gz)
+          
+          ## Installation
+          
+          ```bash
+          curl -L -o extension.tar.gz https://github.com/${{ github.repository }}/releases/download/${{ github.event.inputs.version }}/extension.tar.gz
+          kubectl create configmap extension-tar \
+            --from-file=extension.tar.gz=extension.tar.gz \
+            -n argocd
+          ```
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
