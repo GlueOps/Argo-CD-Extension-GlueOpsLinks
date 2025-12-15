@@ -247,32 +247,49 @@
               onMouseEnter: () => setHoveredGroup(groupIdx),
               onMouseLeave: () => setHoveredGroup(null)
             }, 
-              // Empty or error state - show message in muted color
+              // Empty or error state - show compact with tooltip
               isEmptyOrError ? React.createElement('div', {
+                title: message || 'No data available',
                 style: {
                   display: 'flex',
-                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
                   padding: '4px 6px',
                   backgroundColor: '#fafafa',
                   border: '1px solid #e1e4e8',
                   borderRadius: '3px',
-                  fontSize: '11px'
+                  fontSize: '11px',
+                  cursor: 'help'
                 }
               },
-                React.createElement('span', { style: { display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 500, color: '#24292f', marginBottom: '2px' } },
+                React.createElement('span', { 
+                  style: { 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '4px', 
+                    fontWeight: 500, 
+                    color: '#888',
+                    minWidth: 0,
+                    flex: 1
+                  } 
+                },
                   React.createElement('span', { style: { fontSize: '12px', flexShrink: 0 } }, icon || '🔗'),
-                  React.createElement('span', null, groupLabel)
+                  React.createElement('span', { 
+                    style: { 
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    } 
+                  }, groupLabel)
                 ),
                 React.createElement('span', { 
                   style: { 
                     fontSize: '10px', 
-                    color: '#888',
-                    fontStyle: 'italic',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap'
+                    color: '#999',
+                    flexShrink: 0,
+                    marginLeft: '4px'
                   } 
-                }, message || 'No data available')
+                }, '—')
               ) :
               // Single link - make the whole button a link
               isSingleLink ? React.createElement('a', {

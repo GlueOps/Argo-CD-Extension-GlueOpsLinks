@@ -21,18 +21,20 @@ server:
      - name: glueops-links-extension
        env:
          - name: EXTENSION_URL
-           value: "https://github.com/GlueOps/Argo-CD-Extension-GlueOpsLinks/releases/download/v0.0.6/extension.tar.gz"
+           value: "https://github.com/GlueOps/Argo-CD-Extension-GlueOpsLinks/releases/download/v0.0.7/extension.tar.gz"
          - name: EXTENSION_VERSION
-           value: "0.0.6"
+           value: "0.0.7"
          - name: EXTENSION_ENABLED
            value: "true"
 
 # Configure RBAC for extensions
 configs:
   rbac:
-    policy.default: role:all-users
+    policy.default: role:readonly
     policy.csv: |
-      p, role:all-users, extensions, invoke, glueops-links-extension, allow
+      p, role:readonly, extensions, invoke, glueops-links-extension, allow
+      p, role:admin, extensions, invoke, glueops-links-extension, allow
+      g, admin, role:admin
   params:
     server.enable.proxy.extension: "true"
     server.insecure: "true"
