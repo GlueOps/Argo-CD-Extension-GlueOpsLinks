@@ -21,9 +21,9 @@ server:
      - name: glueops-links-extension
        env:
          - name: EXTENSION_URL
-           value: "https://github.com/GlueOps/Argo-CD-Extension-GlueOpsLinks/releases/download/v0.0.2/extension.tar.gz"
+           value: "https://github.com/GlueOps/Argo-CD-Extension-GlueOpsLinks/releases/download/v0.0.3/extension.tar.gz"
          - name: EXTENSION_VERSION
-           value: "0.0.2"
+           value: "0.0.3"
          - name: EXTENSION_ENABLED
            value: "true"
 
@@ -48,4 +48,4 @@ configs:
       - name: glueops-links-extension
         backend:
           services:
-          - url: https://hwtk6fk1-8000.euw.devtunnels.ms
+          - url: https://api.glueops.dev

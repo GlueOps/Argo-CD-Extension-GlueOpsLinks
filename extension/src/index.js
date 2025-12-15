@@ -58,8 +58,8 @@
           const timeoutId = setTimeout(() => controller.abort(), 5000);
           
           try {
-            // Call ArgoCD proxy extension with new API path pattern
-            const response = await fetch(`/extensions/glueops-links-extension/api/v1/mock/applications/${appName}/links`, {
+            // Call ArgoCD proxy extension API
+            const response = await fetch(`/extensions/glueops-links-extension/api/v1/applications/${appName}/links`, {
               method: 'GET',
               credentials: 'include',
               headers: headers,
