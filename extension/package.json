@@ -1,6 +1,6 @@
 {
   "name": "app-links-extension",
-  "version": "1.0.14",
+  "version": "0.0.1",
   "scripts": {
     "build": "webpack --mode production"
   },
