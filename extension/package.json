@@ -6,7 +6,7 @@
     "package": "rm -rf ../resources && mkdir -p ../resources/glueops-links-extension && cp dist/extensions.js ../resources/glueops-links-extension/ && cd .. && tar -czf extension.tar.gz resources/ && rm -rf resources"
   },
   "devDependencies": {
-    "webpack": "^5.88.0",
+    "webpack": "^5.103.0",
     "webpack-cli": "^5.1.0"
   }
 }
