@@ -39,6 +39,7 @@ configs:
     server.enable.proxy.extension: "true"
     server.insecure: "true"
 
+
   cm:
 # Configure proxy extension backend
     extension.config: |
@@ -46,4 +47,4 @@ configs:
       - name: glueops-links-extension
         backend:
           services:
-          - url: https://hwtk6fk1-8000.euw.devtunnels.ms
+          - url: http://172.17.0.1:8000
