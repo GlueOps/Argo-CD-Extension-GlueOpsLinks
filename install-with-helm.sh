@@ -1,7 +1,11 @@
 #!/bin/bash
 set -e
-
-
+docker compose kill
+docker compose down
+docker rm -f gluelinks-api
+docker rm -f gluelinks-valkey
+docker system prune -a -f
+docker compose up -d
 kind delete cluster || true
 kind create cluster
 

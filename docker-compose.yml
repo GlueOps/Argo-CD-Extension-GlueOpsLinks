@@ -1,0 +1,26 @@
+services:
+  valkey:
+    image: valkey/valkey:latest
+    container_name: gluelinks-valkey
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  api:
+    image: ghcr.io/glueops/gluelinks-api:v3.1.0
+    container_name: gluelinks-api
+    ports:
+      - "8002:8000"
+    environment:
+      USE_MOCK_DATA: "true"
+      VALKEY_URL: "redis://valkey:6379"
+      GRAFANA_BASE_URL: "https://grafana.example.com"
+      VAULT_BASE_URL: "https://vault.example.com"
+      LOG_LEVEL: "DEBUG"
+    depends_on:
+      valkey:
+        condition: service_healthy

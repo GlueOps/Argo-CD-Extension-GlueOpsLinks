@@ -47,4 +47,4 @@ configs:
       - name: glueops-links-extension
         backend:
           services:
-          - url: http://172.17.0.1:8000
+          - url: http://172.17.0.1:8002
