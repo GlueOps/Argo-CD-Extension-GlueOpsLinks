@@ -1,6 +1,6 @@
 services:
   valkey:
-    image: valkey/valkey:latest
+    image: valkey/valkey:latest@sha256:4963247afc4cd33c7d3b2d2816b9f7f8eeebab148d29056c2ca4d7cbc966f2d9
     container_name: gluelinks-valkey
     ports:
       - "6379:6379"
@@ -11,7 +11,7 @@ services:
       retries: 5
 
   api:
-    image: ghcr.io/glueops/gluelinks-api:v3.1.0
+    image: ghcr.io/glueops/gluelinks-api:v3.1.0@sha256:349c394155876b98c0e5a3e022a506f8eb6489ac4a1f38ed3dcd10213bebe783
     container_name: gluelinks-api
     ports:
       - "8002:8000"
