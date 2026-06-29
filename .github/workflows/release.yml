@@ -58,7 +58,7 @@ jobs:
         
     - name: Upload Release Asset
       if: github.event_name == 'release'
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
       with:
         files: extension.tar.gz
         tag_name: ${{ github.event.release.tag_name }}
@@ -67,7 +67,7 @@ jobs:
         
     - name: Create Release (Manual)
       if: github.event_name == 'workflow_dispatch'
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3
       with:
         files: extension.tar.gz
         tag_name: ${{ github.event.inputs.version }}
